@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 03-Jun-2022 às 02:58
--- Versão do servidor: 10.4.22-MariaDB
--- versão do PHP: 8.1.2
+-- Tempo de geração: 12-Jun-2022 às 20:36
+-- Versão do servidor: 10.4.21-MariaDB
+-- versão do PHP: 8.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,21 +24,23 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `incricao`
+-- Estrutura da tabela `inscricao`
 --
 
-CREATE TABLE `incricao` (
+CREATE TABLE `inscricao` (
   `id` int(11) NOT NULL,
   `cpf_cliente` varchar(20) NOT NULL,
-  `fk_plano` int(11) NOT NULL
+  `fk_plano` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Extraindo dados da tabela `incricao`
+-- Extraindo dados da tabela `inscricao`
 --
 
-INSERT INTO `incricao` (`id`, `cpf_cliente`, `fk_plano`) VALUES
-(2, '123.456.789-10', 2);
+INSERT INTO `inscricao` (`id`, `cpf_cliente`, `fk_plano`, `nome`) VALUES
+(2, '123.456.789-10', 2, 'Joao'),
+(3, '123', 1, 'Gabriel');
 
 -- --------------------------------------------------------
 
@@ -65,9 +67,9 @@ INSERT INTO `plano` (`id`, `nome`, `preco`) VALUES
 --
 
 --
--- Índices para tabela `incricao`
+-- Índices para tabela `inscricao`
 --
-ALTER TABLE `incricao`
+ALTER TABLE `inscricao`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_plano` (`fk_plano`);
 
@@ -82,10 +84,10 @@ ALTER TABLE `plano`
 --
 
 --
--- AUTO_INCREMENT de tabela `incricao`
+-- AUTO_INCREMENT de tabela `inscricao`
 --
-ALTER TABLE `incricao`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `inscricao`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `plano`
@@ -98,10 +100,10 @@ ALTER TABLE `plano`
 --
 
 --
--- Limitadores para a tabela `incricao`
+-- Limitadores para a tabela `inscricao`
 --
-ALTER TABLE `incricao`
-  ADD CONSTRAINT `incricao_ibfk_1` FOREIGN KEY (`fk_plano`) REFERENCES `plano` (`id`);
+ALTER TABLE `inscricao`
+  ADD CONSTRAINT `inscricao_ibfk_1` FOREIGN KEY (`fk_plano`) REFERENCES `plano` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
