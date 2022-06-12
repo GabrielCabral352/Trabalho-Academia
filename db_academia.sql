@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 12-Jun-2022 às 20:36
+-- Tempo de geração: 12-Jun-2022 às 23:11
 -- Versão do servidor: 10.4.21-MariaDB
 -- versão do PHP: 8.0.10
 
@@ -39,8 +39,9 @@ CREATE TABLE `inscricao` (
 --
 
 INSERT INTO `inscricao` (`id`, `cpf_cliente`, `fk_plano`, `nome`) VALUES
-(2, '123.456.789-10', 2, 'Joao'),
-(3, '123', 1, 'Gabriel');
+(38, '123.456.789-10', 2, 'Gabriel Cabral'),
+(39, '987.654.321-00', 1, 'Luigi Del Vecchio'),
+(40, '123.987.456-99', 1, 'Alcimar Hollanda');
 
 -- --------------------------------------------------------
 
@@ -87,7 +88,7 @@ ALTER TABLE `plano`
 -- AUTO_INCREMENT de tabela `inscricao`
 --
 ALTER TABLE `inscricao`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de tabela `plano`

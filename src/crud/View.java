@@ -45,24 +45,26 @@ public class View extends javax.swing.JFrame {
 
     public void table(){
         DefaultTableModel tbl = new DefaultTableModel();
+        tbl.addColumn("id");
         tbl.addColumn("Nome");
         tbl.addColumn("CPF");
         tbl.addColumn("Plano");
         tbl.addColumn("Preço");
-        
         try {
             Statement st = (Statement) Conn.getConnection().createStatement();
-            ResultSet rs = st.executeQuery("SELECT i.nome, i.cpf_cliente, p.nome, p.preco FROM inscricao as i inner join plano as p on i.fk_plano = p.id ");
+            ResultSet rs = st.executeQuery("SELECT i.id, p.id,  i.nome, i.cpf_cliente, p.nome, p.preco FROM inscricao as i inner join plano as p on i.fk_plano = p.id ");
+            
             while(rs.next()){
                 tbl.addRow(new Object[]{
+                    rs.getString("id"),
                     rs.getString("nome"),
                     rs.getString("cpf_cliente"),
-                    rs.getString("p.nome"),
+                    rs.getString("p.id")+" - " +rs.getString("p.nome"),
                     rs.getString("p.preco"),
                 });
                 jTable1.setModel(tbl);
             }
-            JOptionPane.showMessageDialog(null, "Success");
+            //JOptionPane.showMessageDialog(null, "Success");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "error: " + e.getMessage());
         }
@@ -115,9 +117,19 @@ public class View extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jButton2.setText("Deletar");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -178,19 +190,70 @@ public class View extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        String selectedID = jComboBox1.getSelectedItem().toString().replaceAll("\\D+","");
-        String query = "INSERT INTO inscricao(nome, cpf_cliente, fk_plano) VALUES('" + jTextField1.getText() +"','" + jTextField2.getText() + "'," + selectedID +")";
-        JOptionPane.showMessageDialog(null, query);
+        //Save
+        //table.getSelectedRow(), 0)
+        
+        if(!"".equals(jTextField1.getText()) && !"".equals(jTextField2.getText()) ){
+            String selectedID = jComboBox1.getSelectedItem().toString().replaceAll("\\D+","");
+            String query = "";
+            try{
+                jTable1.getSelectedRow();
+                int id = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString());
+                query = "UPDATE inscricao SET nome = '" + jTextField1.getText() + "', cpf_cliente = '" +jTextField2.getText() +"', fk_plano =" +selectedID+" WHERE id =" + id ;
+            } catch (Exception e) {
+                query = "INSERT INTO inscricao(nome, cpf_cliente, fk_plano) VALUES('" + jTextField1.getText() +"','" + jTextField2.getText() + "'," + selectedID +")";
+            } 
+            
+            //JOptionPane.showMessageDialog(null, query);
+            try {
+                Connection con = (Connection) Conn.getConnection();
+                PreparedStatement pst = con.prepareStatement(query);
+                pst.execute();
+                jTextField1.setText("");
+                jTextField2.setText("");
+                jComboBox1.setSelectedItem(1);
+
+                //JOptionPane.showMessageDialog(null, "Success");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "error: " + e.getMessage());
+            } 
+            table();
+        }else{
+            JOptionPane.showMessageDialog(null, "Preencha Todos os campos");
+        }
+        
+    }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        //Delete
+        int id = Integer.parseInt(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString());
+        String query = "DELETE FROM inscricao WHERE id=" + id;
+        
+        if(jTable1.getRowCount() == 1){
+            DefaultTableModel tbl = new DefaultTableModel();
+            tbl.setRowCount(0);
+            jTable1.setModel(tbl);
+        }
         try {
             Connection con = (Connection) Conn.getConnection();
             PreparedStatement pst = con.prepareStatement(query);
             pst.execute();
-            JOptionPane.showMessageDialog(null, "Success");
+            jTextField1.setText("");
+            jTextField2.setText("");
+            //JOptionPane.showMessageDialog(null, "Success");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "error: " + e.getMessage());
         } 
         table();
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_jButton2MouseClicked
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // SET EDIT
+        jTextField1.setText(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
+        jTextField2.setText(jTable1.getValueAt(jTable1.getSelectedRow(), 2).toString());
+        jComboBox1.setSelectedItem(jTable1.getValueAt(jTable1.getSelectedRow(), 3).toString());
+        // setSelectedItem(theFoundItem)
+    }//GEN-LAST:event_jTable1MouseClicked
 
     /**
      * @param args the command line arguments
